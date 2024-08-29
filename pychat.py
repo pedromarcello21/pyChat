@@ -5,7 +5,7 @@ import openai
 import json
 import requests
 # Remote library imports
-from flask import request, session
+from flask import request, session, jsonify
 from flask_restful import Resource
 
 
