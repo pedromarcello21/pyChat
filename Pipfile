@@ -17,14 +17,11 @@ flask-bcrypt = "*"
 python-dotenv = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
-openai = "*"  # Added for OpenAI API integration
-email-validator = "*"  # Added to handle email address validation
-requests = "*"  # Added to handle HTTP requests
-flask-cors = "*"  # Flask-CORS to handle cross-origin resource sharing
-flask-migrate = "*"  # Flask-Migrate for handling database migrations
-flask-restful = "*"  # Flask-RESTful for building REST APIs
-flask-sqlalchemy = "*"  # Flask-SQLAlchemy for database ORM
-flask-bcrypt = "*"  # Flask-Bcrypt for hashing passwords
-python-dotenv = "*"  # Python-dotenv for loading environment variables
+openai = "*"  
+email-validator = "*"  
+requests = "*"
+selenium = "*"
+undetected_chromedriver = "*"
+
 
 

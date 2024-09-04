@@ -27,11 +27,16 @@ def send_email(receiver, company):
 
     ##Attach resume
 
-    resume_path="/Users/pedro/Desktop/pychat/Pedro Vincenty's Tech Resume.pdf"
-    with open(resume_path, 'rb') as file:
-        file_data = file.read()
-        file_name = os.path.basename(resume_path)
-        em.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
+    resume_path = "/Users/pedro/Desktop/Pedro Vincenty's Resume.pdf"
+
+    try:
+        with open(resume_path, 'rb') as file:
+            file_data = file.read() 
+            file_name = os.path.basename(resume_path) 
+            em.add_attachment(file_data, maintype='application', subtype='octet-stream', filename=file_name)
+    except Exception as e:
+        return f"Error opening file: {e}"
+
 
     context = ssl.create_default_context()
 
