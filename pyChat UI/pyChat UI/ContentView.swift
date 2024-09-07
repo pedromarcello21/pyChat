@@ -28,6 +28,8 @@ struct ContentView: View {
                                         .padding()
                                         .background(Color.blue)
                                         .cornerRadius(8)
+                                        .frame(maxWidth: 300, alignment: .trailing)
+                                        .padding(.trailing, 20)
                                 } else {
                                     //HStack to capture copy button
                                     HStack{
@@ -40,7 +42,7 @@ struct ContentView: View {
                                                 } placeholder:{
                                                     ProgressView()
                                                 }
-                                                .frame(maxWidth:300, maxHeight:200)
+                                                .frame(maxWidth:300, maxHeight:200, alignment:.leading)
                                                 .cornerRadius(8)
 
                                         } else{
@@ -48,6 +50,7 @@ struct ContentView: View {
                                                 .padding()
                                                 .background(Color(hue: 0.0, saturation: 0.0, brightness: 0.327))
                                                 .cornerRadius(8)
+                                                .frame(maxWidth: 300, alignment:.leading)
                                         }
                                         //syntax for copying
                                         Button(action: {
@@ -62,7 +65,9 @@ struct ContentView: View {
                                         //for no background colr/border
                                         .buttonStyle(PlainButtonStyle())
                                         //push to left
+//                                        .padding(.leading, 20)
                                         Spacer()
+                                        
                                         
                                     }
                                 }
@@ -88,6 +93,13 @@ struct ContentView: View {
                     .padding()
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .frame(width:350)
+                //functionality to press enter instead of clicking
+                    .onSubmit{
+                        sendPrompt()
+                        //reset field to blank
+                        textInput = ""
+                        
+                    }
                 Button(action: {
                     //call on function defined below
                     sendPrompt()
@@ -102,10 +114,10 @@ struct ContentView: View {
                 .cornerRadius(8)
 
             }
-            .padding()
+//            .padding()
         }
         .padding()
-        .frame(width:500)
+        .frame(width:700)
     }
     
     func sendPrompt() {
