@@ -15,6 +15,7 @@ from tasks.email_script import send_email
 from tasks.selenium_tasks import find_flight
 from tasks.open_applications import open_application
 from tasks.get_art import random_art
+from tasks.weather import get_weather
 
 from config import app, db, api
 
@@ -45,6 +46,20 @@ function_descriptions = [
     #         "required": ["loc_origin", "loc_destination"],
     #     },
     # },
+    {
+        "name": "get_weather",
+        "description": "Get weather information for give location.  In response say the name of the location rather than 'your location'",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "location": {
+                    "type": "string",
+                    "description": "the location to retrive weather information for",
+                }
+            },
+            "required": ["location"],
+        },
+    },
     {
         "name": "introductory_linkedin_msg",
         "description": "Get the message template returned by the introductory_linkedin_msg function that's relevant to the purpose of the message.  I.e. who the message is intended for.",
@@ -183,31 +198,31 @@ def chat_with_pychat(prompt):
     # Check if the output contains a function call
     if output.function_call != None:
         print(output)
-        # if output.function_call.name=="get_flight_info":
-        #     # Here we add the function output back to the messages with role: function
+        if output.function_call.name in ["get_flight_info", "get_weather"] :
+            # Here we add the function output back to the messages with role: function
             
-        #     # Parse the function call and arguments
-        #     function_name = output.function_call.name
-        #     params = json.loads(output.function_call.arguments)
+            # Parse the function call and arguments
+            function_name = output.function_call.name
+            params = json.loads(output.function_call.arguments)
             
-        #     # Dynamically call the appropriate function
-        #     chosen_function = eval(function_name)
-        #     answer = chosen_function(**params)
+            # Dynamically call the appropriate function
+            chosen_function = eval(function_name)
+            answer = chosen_function(**params)
 
-        #     second_completion = openai.chat.completions.create(
-        #         model="gpt-3.5-turbo",
-        #         messages=[
-        #             {"role":"user", "content":user_input},
-        #             {"role":"function", "name":function_name, "content":answer}
-        #         ],
-        #         functions=function_descriptions,
-        #     )
+            second_completion = openai.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    # {"role":"user", "content":user_input},
+                    {"role":"function", "name":function_name, "content":answer}
+                ],
+                functions=function_descriptions,
+            )
 
 
-        #     response = second_completion.choices[0].message.content
+            response = second_completion.choices[0].message.content
 
-        #     # Print the final response from GPT
-        #     return response
+            # Print the final response from GPT
+            return response
 
 
 
