@@ -13,9 +13,9 @@ options.add_experimental_option("detach", True)
 #Avoid bot detection
 options.add_argument('--disable-blink-features=AutomationControlled')
 
-today = datetime.today().strftime('%Y-%m-%d')
+# today = datetime.today().strftime('%Y-%m-%d')
 
-def find_flight(destination, date=today):
+def find_flight(destination, date=str(datetime.today().strftime('%Y-%m-%d'))):
     print(date)
 
     # Setting the driver path and requesting a page 
@@ -36,7 +36,7 @@ def find_flight(destination, date=today):
 
     xpath_click(search_bar)
 
-
+    print(destination)
     inputDestination = driver.find_element(By.XPATH, search_bar)
     if inputDestination:
         print("found input path")

@@ -68,7 +68,7 @@ function_descriptions = [
             "properties": {
                 "purpose": {
                     "type": "string",
-                    "description": "The message to be returned depending on the nature of the recipient.  If the purpose is to connect with a flatiron graduate return Flatiron.  If the purpose is to connect with a recruiter return Recruiter.If the purpose is to connect with a hiring manager return Hiring Manager.If the purpose is to connect with a Fordham alum return Fordham.",
+                    "description": "The message to be returned depending on the nature of the recipient.  If the purpose is to connect with a flatiron graduate return Flatiron.  If the purpose is to connect with a recruiter return Recruiter.If the purpose is to connect with a hiring manager return Hiring Manager.If the purpose is to connect with a Fordham alum return Fordham. If the purpose is to connect with a Loyola alum return Loyola",
                 },                
                 "company": {
                     "type": "string",
@@ -120,12 +120,16 @@ function_descriptions = [
                     "type": "string",
                     "description": "The name the person the email is addressed to",
                 },
+                "purpose": {
+                    "type": "string",
+                    "description": "The message to be returned depending on the nature of the recipient.  If the purpose is to connect with a flatiron graduate return Flatiron. If the purpose is to connect with a Fordham alum return Fordham.",
+                }, 
                 "resume": {
                     "type": "string",
                     "description": "Option to include resume.  If resume is included set it as True.  Else set it as False.",
                 },
             },
-            "required": ["receiver", "company", "name", "resume"]
+            "required": ["receiver", "company", "name", "purpose","resume"]
         }
     },
     {
@@ -152,14 +156,14 @@ function_descriptions = [
                     "type": "string",
                     "description": "The destination the user would like to travel to",
                 },
-                #annoying bug that gives me a random date
-                # "date": {
-                #     "type": "string",
-                #     "description": "The date provided by the user to find flights for. If date is not provided use today's date. If year not provided assume current year.  Date needs to be in format YYYY-mm-dd",
-                # }
+                # annoying bug that gives me a random date
+                "date": {
+                    "type": "string",
+                    "description": "The date provided by the user to find flights for. Date needs to be in format 'YYYY-mm-dd'.  If no date provided the function will use a default value",
+                }
 
             },
-            "required": ["destination", "date"]
+            "required": ["destination"]
         }
     },
         {

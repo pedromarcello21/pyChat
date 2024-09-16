@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import json
 
-def introductory_linkedin_msg(company, name, purpose = "Recruiter"):
+def introductory_linkedin_msg(company, name, purpose = "Hiring Manager"):
     if purpose == "Flatiron":
         return f"Hi {name},\nI'm Pedro, a fellow Flatiron School alum. I see you're now at {company}- I'd love to connect and hear about your journey for navigating the job market post-graduation.\nThanks!"
     elif purpose == "Recruiter":
@@ -9,8 +9,9 @@ def introductory_linkedin_msg(company, name, purpose = "Recruiter"):
     elif purpose == "Hiring Manager":
         return f"Hi {name},\nI'm Pedro, an entry level software developer passionate about providing technical advantages for mission driven teams. I'd love to learn more about the roles at {company}."
     elif purpose == "Fordham":
-        return f"Hi {name},\nI'm Pedro, a fellow Fordham alum. I'd love to connect and lear about the culture at {company}.\nThanks!"
-
+        return f"Hi {name},\nI'm Pedro, a fellow Fordham alum. I'd love to connect and learn about the culture at {company}.\nThanks!"
+    elif purpose == "Loyola":
+        return f"Hi {name},\nI'm Pedro, a fellow LUM alum. I'd love to connect and learn about the culture at {company}.\nThanks!"
 
 
 def wellfound_msg(company, name):

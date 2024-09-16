@@ -9,20 +9,27 @@ import smtplib
 load_dotenv()
 
 
-def send_email(receiver, company, name, resume = "False"):
+def send_email(receiver, company, name, purpose, resume = "False"):
     """Send introductory email"""
     email_sender="vincentypedro@gmail.com"
     email_password = os.environ.get("EMAIL_PASSWORD")
     email_receiver = receiver
 
     subject = "Introduction | Pedro Vincenty"
-    body= f"Hi {name.capitalize()},\n\nI'm Pedro Vincenty and I came across your contact information as I was browsing the Fordham Alumni Database. I'd love to connect and learn more about the culture at {company.title()}.  \n\nIf you have any availability in the coming days, I'd love to schedule a 10 minute conversation."
+    if purpose == "Fordham":
+        body= f"Hi {name.capitalize()},\n\nI'm Pedro Vincenty and I came across your contact information as I was browsing the Fordham Alumni Database. I'd love to connect and learn more about the culture at {company.title()}.  \n\nIf you have any availability in the coming days, I'd love to schedule a 10 minute conversation.\n\nBest,\nPedro"
+    elif purpose == "Flatiron":
+        body= f"Hi {name.capitalize()},\n\nI'm Pedro Vincenty, a fellow Flatiron Alum! I'd love to connect and learn more about the culture at {company.title()}.  \n\nIf you have any availability in the coming days, I'd love to schedule a 10 minute conversation.\n\nBest,\nPedro"
+
 
     em = EmailMessage()
 
     em['From'] = "Pedro Vincenty"
     em['To'] = email_receiver
     em['Subject'] = subject
+
+    em.set_content(body)
+
 
 
     ##Attach resume
@@ -31,7 +38,7 @@ def send_email(receiver, company, name, resume = "False"):
     if resume == "True":
 
         #not reading resume in relative path rather the one on my machine
-        resume_path = "/Users/pedro/Desktop/Pedro Vincenty's Resume.pdf"
+        resume_path = "/Users/pedro/Desktop/Job Ish/Pedro Vincenty's Resume.pdf"
         try:
             with open(resume_path, 'rb') as file:
                 file_data = file.read() 
@@ -43,11 +50,6 @@ def send_email(receiver, company, name, resume = "False"):
         except Exception as e:
             return f"Error opening file: {e}"
         
-
-    body +="\n\nBest,\nPedro"
-
-    em.set_content(body)
-
     
     context = ssl.create_default_context()
 

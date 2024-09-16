@@ -22,6 +22,7 @@ email-validator = "*"
 requests = "*"
 selenium = "*"
 undetected_chromedriver = "*"
+yfinance = "*"
 
 
 
