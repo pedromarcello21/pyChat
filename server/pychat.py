@@ -19,6 +19,8 @@ from tasks.weather import get_weather
 
 from config import app, db, api
 
+from models import Lead, Contact, Reminder
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -269,12 +271,132 @@ def chat_with_pychat(prompt):
 #         response = chat_with_pychat(user_input)
 #         print("pyChat:", response)
 
+######### Routes ############
 @app.post('/prompt')
 def send_prompt():
     data = request.json
     prompt = data.get("prompt", "")
     respose = chat_with_pychat(prompt)
     return respose
+
+#### Routes for Leads ####
+@app.post('/leads')
+def add_lead():
+    data = request.json
+    new_lead = Lead(**data)
+    db.session.add(new_lead)
+    db.session.commit()
+    return new_lead.to_dict(), 201
+
+@app.get('/leads')
+def get_leads():
+    all_leads = Lead.query.all()
+    return [leads.to_dict() for leads in all_leads], 200
+
+@app.delete('/leads/<int:id>')
+def remove_lead(id):
+    found_lead = Lead.query.where(Lead.id == id).first()
+    if found_lead:
+        db.session.delete(found_lead)
+        db.session.commit()
+        return {}, 204
+    else:
+        return "Lead not found"
+
+@app.patch('/leads/<int:id>')
+def update_lead(id):
+    found_lead = Lead.query.where(Lead.id == id).first()
+    data = request.json
+
+    for key, value in data.items():
+        if hasattr(found_lead, key):
+            setattr(found_lead, key, value)
+    db.session.add(found_lead)
+    db.session.commit()
+    return found_lead.to_dict(), 200
+
+#### Routes for Contacts
+@app.post('/contacts')
+def add_contact():
+    data = request.json
+    found_contact = Lead.query.filter_by(id=data['company_id']).first() 
+    if found_contact:
+        new_contact = Contact(
+            company_id = found_contact.id,
+            name = data['name'],
+            email = data['email'],
+            number = data['number']
+        )
+        db.session.add(new_contact)
+        db.session.commit()
+
+        return new_contact.to_dict(), 200
+    else:
+        return {'error': "lead not found"}
+
+# get contacts from specific company
+@app.get('/contacts/<int:id>')
+def get_contacts(id):
+    company = Lead.query.where(Lead.id == id).first()
+    contacts = company.contacts
+    return [contact.to_dict() for contact in contacts]
+
+# update contact
+@app.patch('/contacts/<int:id>')
+def update_contact(id):
+    found_contact = Contact.query.where(Contact.id == id).first()
+    data = request.json
+    for key, value in data.items():
+        if hasattr(found_contact, key):
+            setattr(found_contact, key, value)
+    db.session.add(found_contact)
+    db.session.commit()
+    return found_contact.to_dict(), 200
+
+# delete contact
+@app.delete('/contacts/<int:id>')
+def delete_contact(id):
+    found_contact = Contact.query.where(Contact.id == id).first()
+    db.session.delete(found_contact)
+    db.session.commit()
+    return {}, 204
+
+##Reminders Routes
+#Create reminder
+
+@app.post('/reminders')
+def add_reminder():
+    data = request.json
+    date = datetime.strptime(data['alert'],'%Y-%m-%d')
+    new_reminder = Reminder(
+        contact_id = data['contact_id'],
+        alert = date
+    )
+    db.session.add(new_reminder)
+    db.session.commit()
+    return new_reminder.to_dict(), 201
+
+#Get reminder
+
+@app.get('/reminders')
+def get_reminders():
+    #handle specific searches.  i.e. /reminders?contact_id=1
+    contact_id = request.args.get('contact_id')
+    try:
+        if contact_id:
+            reminders = Reminder.query.where(Reminder.contact_id == contact_id).all()
+        else:
+            reminders = Reminder.query.all()
+        return [reminder.to_dict() for reminder in reminders]
+    except:
+        return {"error":"no reminders"}
+
+
+
+##Delete a company deletes its contacts?
+
+
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
