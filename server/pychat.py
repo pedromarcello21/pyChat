@@ -370,7 +370,8 @@ def add_reminder():
     date = datetime.strptime(data['alert'],'%Y-%m-%d')
     new_reminder = Reminder(
         contact_id = data['contact_id'],
-        alert = date
+        alert = date,
+        note = data['note']
     )
     db.session.add(new_reminder)
     db.session.commit()
@@ -391,9 +392,13 @@ def get_reminders():
     except:
         return {"error":"no reminders"}
 
+#get upcoming reminders
+@app.get('/upcoming-reminders')
+def get_upcoming_reminders():
+    time_limit = datetime.now() + timedelta(days=3)
+    upcoming_reminders = Reminder.query.where(Reminder.alert < time_limit).all()
+    return [upcoming_reminder.to_dict() for upcoming_reminder in upcoming_reminders]
 
-
-##Delete a company deletes its contacts?
 
 
 

@@ -57,6 +57,7 @@ class Reminder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     contact_id = db.Column(db.Integer, db.ForeignKey('contacts.id'))
     alert = db.Column(db.DateTime)
+    note = db.Column(db.String)
 
     #Relationship
     contact = db.relationship('Contact', back_populates='reminder')
@@ -64,8 +65,9 @@ class Reminder(db.Model):
     def to_dict(self):
         return{
             'contact':self.contact.to_dict(),
-            'alert':self.alert
+            'alert':self.alert,
+            'note':self.note
 
         }
     def __repr__(self):
-        return f"Reminder(contact_id={self.contact_id}, alert={self.alert})"
+        return f"Reminder(contact_id={self.contact_id}, alert={self.alert}, note = {self.note})"
