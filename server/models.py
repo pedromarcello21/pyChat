@@ -21,6 +21,7 @@ class Lead(db.Model):
 
     def to_dict(self):
         return {
+            'id':self.id,
             'company':self.company,
             'postings':self.postings,
             'alumni':self.alumni,
@@ -44,6 +45,7 @@ class Contact(db.Model):
 
     def to_dict(self):
         return {
+            'id':self.id,
             'company':self.company_id,
             'name':self.name,
             'email':self.email,

@@ -15,7 +15,7 @@ def introductory_linkedin_msg(company, name, purpose = "Hiring Manager"):
 
 
 def wellfound_msg(company, name):
-    return f"""Hi {name},
+    return f"""To the Hiring Manager,
 
 I hope you're doing well. I'm Pedro Vincenty, a multi-disciplined problem solver with a strong programming background. I recently completed Flatiron’s Software Engineering program, which has equipped me with full stack development skills. Prior to that, my experience as a Data Engineer gave me valuable exposure to collaborating with cross-functional teams and contributing effectively from a technical standpoint.  My MBA from Fordham University provided me a tremendous experience to connect with like-minded professionals and hone both my technical and intrapersonal skills.
 
