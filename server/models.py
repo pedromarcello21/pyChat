@@ -41,7 +41,7 @@ class Contact(db.Model):
 
     #Relationships
     lead = db.relationship('Lead', back_populates='contacts')
-    reminder = db.relationship('Reminder', uselist = False, back_populates='contact', cascade='all, delete-orphan')
+    reminders = db.relationship('Reminder', back_populates='contact', cascade='all, delete-orphan')
 
     def to_dict(self):
         return {
@@ -62,12 +62,13 @@ class Reminder(db.Model):
     note = db.Column(db.String)
 
     #Relationship
-    contact = db.relationship('Contact', back_populates='reminder')
+    contact = db.relationship('Contact', back_populates='reminders')
 
     def to_dict(self):
         return{
+            'id':self.id,
             'contact':self.contact.to_dict(),
-            'alert':self.alert,
+            'alert': self.alert.strftime('%Y-%m-%d %H:%M'),  # Format the datetime
             'note':self.note
 
         }

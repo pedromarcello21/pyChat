@@ -7,8 +7,8 @@ from random import randint, choice as rc
 from faker import Faker
 
 # Local imports
-from app import app
-from models import db, Transaction, User, FriendRequest,friendship_table
+from pychat import app
+from models import db, Reminder #Transaction, User, FriendRequest,friendship_table
 
 if __name__ == '__main__':
     fake = Faker()
@@ -17,9 +17,9 @@ if __name__ == '__main__':
         
         # FriendRequest.query.delete()
         
-        Transaction.query.delete()
-        User.query.delete()
-        FriendRequest.query.delete()
+        Reminder.query.delete()
+        # User.query.delete()
+        # FriendRequest.query.delete()
 
         # User.query.delete()
         

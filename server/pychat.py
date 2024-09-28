@@ -7,6 +7,8 @@ import requests
 # Remote library imports
 from flask import request, session, jsonify
 from flask_restful import Resource
+from sqlalchemy import and_
+
 
 
 from datetime import datetime, timedelta
@@ -333,6 +335,13 @@ def add_contact():
         return new_contact.to_dict(), 200
     else:
         return {'error': "lead not found"}
+    
+##GET all contacts
+
+@app.get('/contacts')
+def get_all_contacts():
+    contacts = Contact.query.all()
+    return [contact.to_dict() for contact in contacts]
 
 # get contacts from specific company
 @app.get('/contacts/<int:id>')
@@ -367,7 +376,7 @@ def delete_contact(id):
 @app.post('/reminders')
 def add_reminder():
     data = request.json
-    date = datetime.strptime(data['alert'],'%Y-%m-%d')
+    date = datetime.strptime(data['alert'],'%Y-%m-%d %H:%M')
     new_reminder = Reminder(
         contact_id = data['contact_id'],
         alert = date,
@@ -396,8 +405,15 @@ def get_reminders():
 @app.get('/upcoming-reminders')
 def get_upcoming_reminders():
     time_limit = datetime.now() + timedelta(days=3)
-    upcoming_reminders = Reminder.query.where(Reminder.alert < time_limit).all()
+
+    upcoming_reminders = Reminder.query.where(
+        and_(
+            Reminder.alert < time_limit,
+            Reminder.alert > datetime.now()  # This ensures reminders are in the future
+        )
+    ).all()    
     return [upcoming_reminder.to_dict() for upcoming_reminder in upcoming_reminders]
+
 
 
 

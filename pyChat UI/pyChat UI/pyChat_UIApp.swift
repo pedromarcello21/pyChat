@@ -11,7 +11,8 @@ import SwiftUI
 struct pyChat_UIApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationManagerView()
         }
     }
 }
+

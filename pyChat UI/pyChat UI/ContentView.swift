@@ -9,7 +9,7 @@ struct ContentView: View {
 
     var body: some View {
         //start of VStack
-        VStack {
+            VStack {
             //title font
             Text("pyChat")
                 .font(.title)
@@ -36,15 +36,15 @@ struct ContentView: View {
                                         if chatHistory[index].message.hasPrefix("https://images"){
                                             //adjust accordingly when time to present
                                             AsyncImage(url: URL(string: chatHistory[index].message))
-                                                { image in image
+                                            { image in image
                                                     .resizable()
                                                     .scaledToFit()
-                                                } placeholder:{
-                                                    ProgressView()
-                                                }
-                                                .frame(maxWidth:300, maxHeight:200, alignment:.leading)
-                                                .cornerRadius(8)
-
+                                            } placeholder:{
+                                                ProgressView()
+                                            }
+                                            .frame(maxWidth:300, maxHeight:200, alignment:.leading)
+                                            .cornerRadius(8)
+                                            
                                         } else{
                                             Text(chatHistory[index].message)
                                                 .padding()
@@ -60,12 +60,12 @@ struct ContentView: View {
                                         }){
                                             //copy button is rendered as followinng icon
                                             Image(systemName: "doc.on.doc.fill")
-                                                
+                                            
                                         }
                                         //for no background colr/border
                                         .buttonStyle(PlainButtonStyle())
                                         //push to left
-//                                        .padding(.leading, 20)
+                                        //                                        .padding(.leading, 20)
                                         Spacer()
                                         
                                         
@@ -84,9 +84,9 @@ struct ContentView: View {
                 //set frame height of chat history
                 .frame(maxHeight: 300)
             }
-
+            
             Spacer()
-
+            
             // Input Field
             HStack {
                 TextField("Enter task...", text: $textInput)
@@ -112,9 +112,9 @@ struct ContentView: View {
                 }
                 .background(Color.blue)
                 .cornerRadius(8)
-
+                
             }
-//            .padding()
+            //            .padding()
         }
         .padding()
         .frame(width:700)
@@ -174,8 +174,8 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ContentView()
+//    }
+//}
