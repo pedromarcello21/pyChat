@@ -18,6 +18,7 @@ from tasks.selenium_tasks import find_flight
 from tasks.open_applications import open_application
 from tasks.get_art import random_art
 from tasks.weather import get_weather
+from tasks.analyze_pokemon_team import analyze_pokemon_team
 
 from config import app, db, api
 
@@ -62,6 +63,30 @@ function_descriptions = [
                 }
             },
             "required": ["location"],
+        },
+    },
+    {
+        "name": "analyze_pokemon_team",
+        "description": "Return an analysis the pros and cons of the provided pokemon team",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "team": {
+                    "type": "object",
+                    "description": "dictionary of pokemon in team",
+                    "properties": {
+                        "pokemon1": { "type": "string" },
+                        "pokemon2": { "type": "string" },
+                        "pokemon3": { "type": "string" },
+                        "pokemon4": { "type": "string" },
+                        "pokemon5": { "type": "string" },
+                        "pokemon6": { "type": "string" }
+                    },
+                    "required": ["pokemon1", "pokemon2", "pokemon3", "pokemon4", "pokemon5", "pokemon6"]
+
+                }
+            },
+            "required": ["team"],
         },
     },
     {
@@ -124,16 +149,24 @@ function_descriptions = [
                     "type": "string",
                     "description": "The name the person the email is addressed to",
                 },
+                "link": {
+                    "type": "string",
+                    "description": "The hyperlink to the job posting"
+                }, 
                 "purpose": {
                     "type": "string",
-                    "description": "The message to be returned depending on the nature of the recipient.  If the purpose is to connect with a flatiron graduate return Flatiron. If the purpose is to connect with a Fordham alum return Fordham.",
+                    "description": "The message to be returned depending on the nature of the recipient.  If the purpose is to connect with a flatiron graduate return Flatiron. If the purpose is to connect with a Fordham alum return Fordham.  If the purpose is to connect with a recruiter return Recruiter.  If no purpose is specified return cold."
                 }, 
+                "role": {
+                    "type": "string",
+                    "description": "This is the role that the user applied for and it reaching out in regards to.  This is only tied to a cold purpose meaning the user has no relation to the person he/she is reaching out to.",
+                },
                 "resume": {
                     "type": "string",
                     "description": "Option to include resume.  If resume is included set it as True.  Else set it as False.",
                 },
             },
-            "required": ["receiver", "company", "name", "purpose","resume"]
+            "required": ["receiver", "company", "name", "purpose","link","role","resume"]
         }
     },
     {
@@ -206,7 +239,7 @@ def chat_with_pychat(prompt):
     # Check if the output contains a function call
     if output.function_call != None:
         print(output)
-        if output.function_call.name in ["get_flight_info", "get_weather"] :
+        if output.function_call.name in ["get_flight_info", "get_weather", "analyze_pokemon_team"] :
             # Here we add the function output back to the messages with role: function
             
             # Parse the function call and arguments
@@ -404,7 +437,7 @@ def get_reminders():
 #get upcoming reminders
 @app.get('/upcoming-reminders')
 def get_upcoming_reminders():
-    time_limit = datetime.now() + timedelta(days=3)
+    time_limit = datetime.now() + timedelta(days=5)
 
     upcoming_reminders = Reminder.query.where(
         and_(

@@ -12,6 +12,7 @@ enum SideBarItem: String, Identifiable, CaseIterable {
     case pyChat
     case Leads
     case Reminders
+    case Pokecenter
 }
 
 struct NavigationManagerView: View {
@@ -34,6 +35,8 @@ struct NavigationManagerView: View {
                 Leads()
             case .Reminders:
                 Reminders()
+            case .Pokecenter:
+                Pokecenter()
             }
         }
         

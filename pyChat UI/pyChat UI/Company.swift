@@ -104,11 +104,13 @@ struct Company: View{
                     }
                 }
                 
-                Button(action: { print("contact added") }) {
-                    NavigationLink(destination: ContactForm(company_id: company_id)) {
-                        Text("Add Contact")
-                    }
-                }
+            NavigationLink(destination: ContactForm(company_id: company_id)) {
+                Text("Add Contact")
+            }
+            .padding()
+                    
+                
+                
             } else {
                 LabeledContent {
                     TextField("Enter new lead...", text: $companyName)
