@@ -12,6 +12,7 @@
 		EB2AA8852C7FA8F3003B0994 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB2AA8842C7FA8F3003B0994 /* Assets.xcassets */; };
 		EB2AA8882C7FA8F3003B0994 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EB2AA8872C7FA8F3003B0994 /* Preview Assets.xcassets */; };
 		EB5D30782CA5C4FE005831EA /* ContactForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB5D30772CA5C4F8005831EA /* ContactForm.swift */; };
+		EB9355562CB5790B00621A76 /* VictoryRoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9355552CB5790300621A76 /* VictoryRoad.swift */; };
 		EBA3B21C2CA6FF6F0031EC8A /* ReminderForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA3B21B2CA6FF6B0031EC8A /* ReminderForm.swift */; };
 		EBB2EB792CAC873000EA41D5 /* Pokecenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB2EB782CAC872800EA41D5 /* Pokecenter.swift */; };
 		EBFBBAC22CA1D385003EDD77 /* NavigationManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBFBBAC12CA1D37B003EDD77 /* NavigationManagerView.swift */; };
@@ -30,6 +31,7 @@
 		EB2AA8872C7FA8F3003B0994 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EB2AA8892C7FA8F3003B0994 /* pyChat_UI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = pyChat_UI.entitlements; sourceTree = "<group>"; };
 		EB5D30772CA5C4F8005831EA /* ContactForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactForm.swift; sourceTree = "<group>"; };
+		EB9355552CB5790300621A76 /* VictoryRoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VictoryRoad.swift; sourceTree = "<group>"; };
 		EBA3B21B2CA6FF6B0031EC8A /* ReminderForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderForm.swift; sourceTree = "<group>"; };
 		EBB2EB782CAC872800EA41D5 /* Pokecenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokecenter.swift; sourceTree = "<group>"; };
 		EBFBBAC12CA1D37B003EDD77 /* NavigationManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationManagerView.swift; sourceTree = "<group>"; };
@@ -81,6 +83,7 @@
 				EBFBBAC52CA1F093003EDD77 /* pyChatView.swift */,
 				EBFBBAC12CA1D37B003EDD77 /* NavigationManagerView.swift */,
 				EBB2EB782CAC872800EA41D5 /* Pokecenter.swift */,
+				EB9355552CB5790300621A76 /* VictoryRoad.swift */,
 				EB2AA8842C7FA8F3003B0994 /* Assets.xcassets */,
 				EB2AA8892C7FA8F3003B0994 /* pyChat_UI.entitlements */,
 				EB2AA8862C7FA8F3003B0994 /* Preview Content */,
@@ -168,6 +171,7 @@
 			files = (
 				EB5D30782CA5C4FE005831EA /* ContactForm.swift in Sources */,
 				EBB2EB792CAC873000EA41D5 /* Pokecenter.swift in Sources */,
+				EB9355562CB5790B00621A76 /* VictoryRoad.swift in Sources */,
 				EBFBBAC22CA1D385003EDD77 /* NavigationManagerView.swift in Sources */,
 				EBFBBACA2CA1F102003EDD77 /* RemindersView.swift in Sources */,
 				EBFBBAC62CA1F09D003EDD77 /* pyChatView.swift in Sources */,

@@ -67,7 +67,7 @@ struct Company: View{
                 Text(company!)
                     .onAppear{
                         contactModel.fetch(company_id: company_id)
-                        alumni = alumniPassed // Initialize here if you are passing values
+                        alumni = alumniPassed //initialize here if you are passing values
                         postings = postingsPassed
                     }
                 

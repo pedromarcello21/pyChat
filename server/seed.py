@@ -8,16 +8,17 @@ from faker import Faker
 
 # Local imports
 from pychat import app
-from models import db, Reminder #Transaction, User, FriendRequest,friendship_table
+from models import db, Reminder, Pokemon #Transaction, User, FriendRequest,friendship_table
 
 if __name__ == '__main__':
     fake = Faker()
     with app.app_context():
         print("Starting seed...")
+        # Pokemon.__table__.drop(db.engine)
         
         # FriendRequest.query.delete()
         
-        Reminder.query.delete()
+        # Pokemon.query.delete()
         # User.query.delete()
         # FriendRequest.query.delete()
 

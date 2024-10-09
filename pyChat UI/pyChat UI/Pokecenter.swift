@@ -1,4 +1,6 @@
 import SwiftUI
+import Foundation
+
 
 //define result struct in the JSON response
 struct Result: Hashable, Codable {
@@ -14,15 +16,57 @@ struct Response: Hashable, Codable {
     var results: [Result]
 }
 
-//defie pokemon struct
-struct Pokemon: Hashable, Codable, Identifiable{
-    var id: Int
-    var name: String
-    var image: String
-    
+struct PokemonID: Codable {
+    let name: String
+    let imageURL: String
 }
 
+
+class PokemonFetcher {
+    
+    func fetchPokemonInfo(name: String, completion: @escaping (PokemonID?) -> Void) {
+        let urlString = "https://pokeapi.co/api/v2/pokemon/\(name.lowercased())"
+        guard let url = URL(string: urlString) else {
+            completion(nil)
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                completion(nil)
+                return
+            }
+            
+            do {
+                if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                   let sprites = json["sprites"] as? [String: Any],
+                   let frontDefault = sprites["front_default"] as? String {
+                    let pokemon = PokemonID(name: name, imageURL: frontDefault)
+                    completion(pokemon)
+                } else {
+                    completion(nil)
+                }
+            } catch {
+                completion(nil)
+            }
+        }
+        
+        task.resume()
+    }
+}
+
+
 struct Pokecenter: View {
+    
+    @Environment(\.presentationMode) private var
+    presentationMode: Binding<PresentationMode>
+    
+    let teamIDPassed: Int?
+    let teamNamePassed: String?
+    let pokemonAnalysisPassed: String?
+    let teamPassed: [String]?
+
+    
     //initialize state of API response
     @State private var response = Response(count: 0, next: nil, previous: nil, results: [])
     //initialize search text
@@ -32,6 +76,18 @@ struct Pokecenter: View {
     
     //define list of dictionaries of type Pokemon
     @State private var team: [Pokemon] = []
+    
+    //define list of dictionaries of type Pokemon
+    @State private var pokemonAnalysis: String = ""
+    
+    //define team name
+    @State private var teamName: String = ""
+    
+    //fetched team
+    @State private var fetchedTeam: [PokemonID] = []
+
+
+
     
     //define column space for pokemon output
     let columns = [
@@ -45,41 +101,76 @@ struct Pokecenter: View {
             Text("Pokémon Center")
                 .font(.largeTitle)
                 .padding()
+            
+            
+            if let teamIDPassed = teamIDPassed, let teamPassed = teamPassed, let pokemonAnalysisPassed = pokemonAnalysisPassed{
+                Text(teamNamePassed!)
+                
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 20) {
+                        ForEach(fetchedTeam, id: \.name) { pokemon in
+                            VStack {
+                                Text(pokemon.name.capitalized)
+                                    .font(.title2)
+                                
+                                AsyncImage(url: URL(string: pokemon.imageURL)) { image in
+                                    image
+                                        .resizable()
+                                        .scaledToFit()
+                                        .cornerRadius(8)
+                                        .padding(10)
+                                        .background(Color.white)
+                                        .frame(width: 80, height: 80)
+                                } placeholder: {
+                                    ProgressView()
+                                }
+                            }.frame(maxWidth: .infinity) // Ensures even spacing in the column
+                        }
+                    }; Spacer()
+                    Text(pokemonAnalysisPassed)
+                }
 
-            //search Bar
-            TextField("Search Pokémon", text: $searchText)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-
-            //display filtered Pokémon based on search.  show dropdown only if no pokemon is selected
+                
+            } 
+            else{
+                //search Bar
+                TextField("Search Pokémon", text: $searchText)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+                
+                
+                //display filtered Pokémon based on search.  show dropdown only if no pokemon is selected
                 //if search bar populated
-            ZStack{
-                ScrollView{
-                    VStack{
-                        if !team.isEmpty {
-                            LazyVGrid(columns: columns, spacing: 20) {
-                                ForEach(team) { pokemon in
-                                    VStack{
-                                        Text(pokemon.name.capitalized)
-                                            .font(.title2)
-
-                                         AsyncImage(url: URL(string: pokemon.image)) { image in
-                                             image
-                                                 .resizable()
-                                                 .scaledToFit()
-                                                 .cornerRadius(8)
-                                                 .padding(10)
-                                                 .background(Color.white)
-                                                 .frame(width: 80, height: 80)
-                                         } placeholder: {
-                                             ProgressView()
-                                         }
-                                    }.frame(maxWidth: .infinity)// Ensures even spacing in the column
+                ZStack{
+                    ScrollView{
+                        VStack{
+                            if !team.isEmpty {
+                                LazyVGrid(columns: columns, spacing: 20) {
+                                    ForEach(team) { pokemon in
+                                        VStack{
+                                            Text(pokemon.name.capitalized)
+                                                .font(.title2)
+                                            
+                                            AsyncImage(url: URL(string: pokemon.image)) { image in
+                                                image
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .cornerRadius(8)
+                                                    .padding(10)
+                                                    .background(Color.white)
+                                                    .frame(width: 80, height: 80)
+                                            } placeholder: {
+                                                ProgressView()
+                                            }
+                                        }.frame(maxWidth: .infinity)// Ensures even spacing in the column
+                                    }
                                 }
                             }
-                         }
+                            if !pokemonAnalysis.isEmpty {
+                                Text(pokemonAnalysis)
+                            }
+                        }
                     }
-                }
                     if !searchText.isEmpty {
                         VStack {
                             List(filteredPokemon, id: \.name) { result in
@@ -88,21 +179,21 @@ struct Pokecenter: View {
                                         .foregroundColor(.gray)
                                         .onTapGesture {
                                             // Update the selected Pokémon when tapped
-    //                                        selectedPokemon = result
+                                            //                                        selectedPokemon = result
                                             searchText = result.name.capitalized
-
+                                            
                                             let startSkip = "https://pokeapi.co/api/v2/pokemon/".count
                                             // Remove trailing slash if it exists
                                             let trimmedURL = result.url.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
                                             let startIndex = trimmedURL.index(trimmedURL.startIndex, offsetBy: startSkip)
                                             let substring = trimmedURL[startIndex...] // Extract the substring from startSkip to the end
-                                            let pokemonImage = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/\(substring).png"
+                                            let pokemonImage = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(substring).png"
                                             if team.count < 6 { team.append(Pokemon(id: team.count, name: searchText, image:pokemonImage))
                                             }
                                             searchText = ""
-//                                            print(team)
-
-
+                                            //                                            print(team)
+                                            
+                                            
                                         }
                                 }
                             }
@@ -110,19 +201,46 @@ struct Pokecenter: View {
                             .listStyle(PlainListStyle())
                         }
                     }
-                }
-            if team.count == 6{
-                Button(action: {
-                    print("Analyzing Team...")
-                    analyzeTeam()
-                }){
-                    //copy button is rendered as followinng icon
-                    Text("Analyze Team")
                     
                 }
+                if team.count == 6 && pokemonAnalysis.isEmpty{
+                    Button(action: {
+                        print("Analyzing Team...")
+                        analyzeTeam()
+                    }){
+                        //copy button is rendered as followinng icon
+                        Text("Analyze Team")
+                        
+                    }
+                } else if team.count == 6 && !pokemonAnalysis.isEmpty{
+                    HStack{
+                        TextField("Enter Pokémon Team Name", text: $teamName).padding()
+                        Button(action: {
+                            print("Adding Team...")
+                            addTeam()
+                        })
+                        {
+                            //copy button is rendered as followinng icon
+                            Text("Add Team")
+                                .padding()
+                        }
+                    }
+                }
             }
-         }
-        .onAppear(perform: getPokemon) // Fetch Pokémon when the view appears
+        }
+        .onAppear {
+            getPokemon() // Existing method
+            fetchTeamPokemon() // Fetch data for passed team
+        }
+        .toolbar(content: {
+            ToolbarItem(placement: .automatic) {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }, label: {
+                    Text("Back")
+                })
+            }
+        })
         
     }
 
@@ -132,7 +250,9 @@ struct Pokecenter: View {
             //shorthand for each result in list of Result objects
             $0.name.lowercased().contains(searchText.lowercased())
         }
+        
     }
+    
 
     //function for API call to fetch pokemon.  more or less boilerplate from youtube videos I seen
     func getPokemon() {
@@ -165,11 +285,14 @@ struct Pokecenter: View {
                     print("Failed to decode data: \(error)") //log any decoding errors
                 }
             }
+            
         }.resume()
+        
     }
     func analyzeTeam() {
         //url of my api
-        guard let url = URL(string: "http://127.0.0.1:5555/prompt") else {
+        //looks like this will have to hit a different endpoint
+        guard let url = URL(string: "http://127.0.0.1:5555/analyze-team") else {
             print("Invalid URL")
             return
         }
@@ -180,7 +303,7 @@ struct Pokecenter: View {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let parameters: [String: Any] = [
-            "team": [
+            "prompt": [
                 "pokemon1": team[0].name,
                 "pokemon2": team[1].name,
                 "pokemon3": team[2].name,
@@ -190,11 +313,18 @@ struct Pokecenter: View {
             ]
         ]
         
-        print(parameters)
+        print("Parameters: \(parameters)")
+
 
         //convert to JSON
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+//            let jsonData = try JSONSerialization.data(withJSONObject: parameters, options: [])
+            
+//            if let jsonString = String(data: jsonData, encoding: .utf8) {
+//                print("Serialized Data: \(jsonString)")
+//            }
+
         } catch {
             print("Error serializing JSON: \(error)")
             return
@@ -222,6 +352,7 @@ struct Pokecenter: View {
             //update state to UI
             DispatchQueue.main.async {
                 print("Response from server: \(responseString)")
+                pokemonAnalysis = responseString
 
 //                responseMessage = responseString
 //                chatHistory.append((message: responseString, isUser: false))
@@ -230,6 +361,86 @@ struct Pokecenter: View {
         //calls the task defined above
         task.resume()
     }
+    
+    func addTeam(){
+
+        //url of my api
+        guard let url = URL(string: "http://127.0.0.1:5555/add-team") else {
+            print("Invalid URL")
+            return
+        }
+        
+        //SWIFT UI for URL requesting
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let parameters: [String: Any] = ["name":teamName,"pokemon_1": team[0].name, "pokemon_2": team[1].name,"pokemon_3": team[2].name,"pokemon_4": team[3].name,"pokemon_5": team[4].name,"pokemon_6": team[5].name,"analysis":pokemonAnalysis]
+        
+        //convert to JSON
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+            //add prompt to chat history
+        } catch {
+            print("Error serializing JSON: \(error)")
+            return
+        }
+        
+        //make post request
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+                return
+            }
+            
+            //looks for status code 200 for check
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 201 else {
+                print("Server returned error")
+                return
+            }
+            
+            //get return value from pychat
+            guard let data = data, let responseString = String(data: data, encoding: .utf8) else {
+                print("No data received or invalid format")
+                return
+            }
+            
+//            update state to UI
+                DispatchQueue.main.async {
+                    pokemonAnalysis = ""
+                    team = []
+                    teamName = ""
+            
+            }
+        }
+        //calls the task defined above
+        task.resume()
+    }
+    func fetchTeamPokemon() {
+        guard let teamPassed = teamPassed else { return }
+        
+        // Create a dispatch group to manage concurrent fetches
+        let dispatchGroup = DispatchGroup()
+        
+        for name in teamPassed {
+            dispatchGroup.enter()
+            PokemonFetcher().fetchPokemonInfo(name: name) { pokemon in
+                if let pokemon = pokemon {
+                    DispatchQueue.main.async {
+                        self.fetchedTeam.append(pokemon)
+                    }
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            print("Finished fetching all Pokémon data.")
+        }
+    }
+
+
+    
 }
 
 struct Pokecenter_Preview: PreviewProvider {

@@ -3,6 +3,8 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import validates
 
+######## flask --app pychat db migrate -m "9/28  work"   
+
 
 from config import db, bcrypt
 import re
@@ -74,3 +76,30 @@ class Reminder(db.Model):
         }
     def __repr__(self):
         return f"Reminder(contact_id={self.contact_id}, alert={self.alert}, note = {self.note})"
+
+class PokemonTeam(db.Model):
+    __tablename__ = 'pokemon_teams'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    pokemon_1 = db.Column(db.String)
+    pokemon_2 = db.Column(db.String)
+    pokemon_3 = db.Column(db.String)
+    pokemon_4 = db.Column(db.String)
+    pokemon_5 = db.Column(db.String)
+    pokemon_6 = db.Column(db.String)
+    analysis = db.Column(db.String)
+
+    def to_dict(self):
+        return{
+            'id':self.id,
+            'name':self.name,
+            'pokemon_1':self.pokemon_1,
+            'pokemon_2':self.pokemon_2,
+            'pokemon_3':self.pokemon_3,
+            'pokemon_4':self.pokemon_4,
+            'pokemon_5':self.pokemon_5,
+            'pokemon_6':self.pokemon_6,
+            'analysis':self.analysis
+        }
+    def __repr__(self):
+        return f"Pokemon Team(id={self.id}, name={self.name}, pokemon_1={self.pokemon_1}, pokemon_2={self.pokemon_2}, pokemon_3={self.pokemon_3}, pokemon_4={self.pokemon_4}, pokemon_5={self.pokemon_5}, pokemon_6={self.pokemon_6}, analysis={self.analysis})"

@@ -22,7 +22,7 @@ from tasks.analyze_pokemon_team import analyze_pokemon_team
 
 from config import app, db, api
 
-from models import Lead, Contact, Reminder
+from models import Lead, Contact, Reminder, PokemonTeam
 
 # Load environment variables from .env file
 load_dotenv()
@@ -155,7 +155,7 @@ function_descriptions = [
                 }, 
                 "purpose": {
                     "type": "string",
-                    "description": "The message to be returned depending on the nature of the recipient.  If the purpose is to connect with a flatiron graduate return Flatiron. If the purpose is to connect with a Fordham alum return Fordham.  If the purpose is to connect with a recruiter return Recruiter.  If no purpose is specified return cold."
+                    "description": "The message to be returned depending on the nature of the recipient.  If the purpose is to connect with a flatiron graduate return Flatiron. If the purpose is to connect with a Fordham alum return Fordham.  If the purpose is to connect with HR return HR.  If no purpose is specified return cold."
                 }, 
                 "role": {
                     "type": "string",
@@ -307,12 +307,37 @@ def chat_with_pychat(prompt):
 #         print("pyChat:", response)
 
 ######### Routes ############
+
+#### Prompt Chat Ish ####
 @app.post('/prompt')
 def send_prompt():
     data = request.json
     prompt = data.get("prompt", "")
     respose = chat_with_pychat(prompt)
     return respose
+
+#### Pokemon Ish ####
+
+@app.post('/analyze-team')
+def analyze_team():
+    data = request.json
+    prompt = data.get("prompt", {})
+    string_prompt = str(prompt)
+    response = chat_with_pychat(string_prompt)
+    return response
+
+@app.post('/add-team')
+def add_team():
+    data = request.json
+    new_team = PokemonTeam(**data)
+    db.session.add(new_team)
+    db.session.commit()
+    return new_team.to_dict(), 201
+
+@app.get('/pokemon-teams')
+def get_teams():
+    all_teams = PokemonTeam.query.all()
+    return [team.to_dict() for team in all_teams], 200
 
 #### Routes for Leads ####
 @app.post('/leads')
