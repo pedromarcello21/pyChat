@@ -97,7 +97,7 @@ function_descriptions = [
             "properties": {
                 "purpose": {
                     "type": "string",
-                    "description": "The message to be returned depending on the nature of the recipient.  If the purpose is to connect with a flatiron graduate return Flatiron.  If the purpose is to connect with a recruiter return Recruiter.If the purpose is to connect with a hiring manager return Hiring Manager.If the purpose is to connect with a Fordham alum return Fordham. If the purpose is to connect with a Loyola alum return Loyola",
+                    "description": "The message to be returned depending on the nature of the recipient.  If the purpose is to connect with a flatiron graduate return Flatiron.  If the purpose is to connect with a recruiter return Recruiter.If the purpose is to connect with a hiring manager return Hiring Manager.If the purpose is to connect with a Fordham alum return Fordham. If the purpose is to connect with a Loyola alum return Loyola. If the purpose is for linkedin return LinkedIn",
                 },                
                 "company": {
                     "type": "string",
@@ -106,10 +106,15 @@ function_descriptions = [
                 "name": {
                     "type": "string",
                     "description": "The name of the recipient",
+                },
+                "role": {
+                    "type": "string",
+                    "description": "The role posted by the company",
                 }
 
+
             },
-            "required": ["company", "name", "purpose"]
+            "required": ["purpose", "company", "name", "role"]
         }
     },
     {
@@ -155,7 +160,7 @@ function_descriptions = [
                 }, 
                 "purpose": {
                     "type": "string",
-                    "description": "The message to be returned depending on the nature of the recipient.  If the purpose is to connect with a flatiron graduate return Flatiron. If the purpose is to connect with a Fordham alum return Fordham.  If the purpose is to connect with HR return HR.  If no purpose is specified return cold."
+                    "description": "The message to be returned depending on the nature of the recipient.  If the purpose is to connect with a flatiron graduate return Flatiron. If the purpose is to connect with a Fordham alum return Fordham.  If the purpose is to connect with HR return HR.  If the purpose is to connect with a recruiter return Recruiter."
                 }, 
                 "role": {
                     "type": "string",
@@ -338,6 +343,29 @@ def add_team():
 def get_teams():
     all_teams = PokemonTeam.query.all()
     return [team.to_dict() for team in all_teams], 200
+
+@app.delete('/pokemon-team/<int:id>')
+def remove_team(id):
+    found_team = PokemonTeam.query.where(PokemonTeam.id == id).first()
+    if found_team:
+        db.session.delete(found_team)
+        db.session.commit()
+        return {}, 204
+    else:
+        return "Team not registered"
+    
+@app.patch('/update-pokemon-team/<int:id>')
+def update_team(id):
+    selected_team = PokemonTeam.query.where(PokemonTeam.id == id).first()
+    data = request.json
+
+    for key, value in data.items():
+        if hasattr(selected_team, key):
+            setattr(selected_team, key, value)
+    db.session.add(selected_team)
+    db.session.commit()
+    return selected_team.to_dict(), 200
+
 
 #### Routes for Leads ####
 @app.post('/leads')

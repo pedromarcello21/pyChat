@@ -5,6 +5,8 @@
 //  Created by pedro on 9/23/24.
 //
 import SwiftUI
+import AVFoundation
+
 
 struct pyChat: View {
     ///set states
@@ -12,6 +14,8 @@ struct pyChat: View {
     @State private var responseMessage: String? = nil
     ///chat history captures message content and if it was sent my user or pychat
     @State private var chatHistory: [(message: String, isUser: Bool)] = []
+    //create a speech synthesizer instance
+    private let speechSynthesizer = AVSpeechSynthesizer()
 
     var body: some View {
         //start of VStack
@@ -57,6 +61,7 @@ struct pyChat: View {
                                                 .background(Color(hue: 0.0, saturation: 0.0, brightness: 0.327))
                                                 .cornerRadius(8)
                                                 .frame(maxWidth: 300, alignment:.leading)
+          
                                         }
                                         //syntax for copying
                                         Button(action: {
@@ -95,16 +100,16 @@ struct pyChat: View {
             
             // Input Field
             HStack {
+                
                 TextField("Enter task...", text: $textInput)
                     .padding()
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .frame(width:350)
+                    .frame(width:350, height: 100)
                 //functionality to press enter instead of clicking
                     .onSubmit{
                         sendPrompt()
                         //reset field to blank
                         textInput = ""
-                        
                     }
                 Button(action: {
                     //call on function defined below
@@ -173,9 +178,23 @@ struct pyChat: View {
             DispatchQueue.main.async {
                 responseMessage = responseString
                 chatHistory.append((message: responseString, isUser: false))
+//                speak(text: String(responseMessage!))
+                            
             }
         }
         //calls the task defined above
         task.resume()
+    }
+    //function to speak
+       private func speak(text: String) {
+           let utterance = AVSpeechUtterance(string: text)
+           utterance.voice = AVSpeechSynthesisVoice(language: "en-AU") // Set the voice language
+           speechSynthesizer.speak(utterance)
+       }
+}
+
+struct pyChatView_Preview: PreviewProvider {
+    static var previews: some View {
+        NavigationManagerView()
     }
 }

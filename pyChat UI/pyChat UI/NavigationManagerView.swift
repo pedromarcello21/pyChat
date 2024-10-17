@@ -9,11 +9,10 @@ import SwiftUI
 enum SideBarItem: String, Identifiable, CaseIterable {
     var id: String { rawValue }
     
-    case pyChat
-    case Leads
-    case Reminders
-//    case Pokecenter
-    case VictoryRoad
+    case pyChat = "pyChat"
+    case Leads = "Leads"
+    case Reminders = "Reminders"
+    case PokemonCenter = "Pokémon Center"
 }
 
 struct NavigationManagerView: View {
@@ -24,7 +23,7 @@ struct NavigationManagerView: View {
         NavigationSplitView(columnVisibility: $sideBarVisibility) {
             List(SideBarItem.allCases, selection: $selectedSideBarItem){ item in
                 NavigationLink(
-                    item.rawValue.localizedCapitalized,
+                    item.rawValue,
                     value:item
                 )
             }
@@ -36,8 +35,8 @@ struct NavigationManagerView: View {
                 Leads()
             case .Reminders:
                 Reminders()
-            case .VictoryRoad:
-                VictoryRoad()
+            case .PokemonCenter:
+                PokemonCenter()
             }
         }
         
