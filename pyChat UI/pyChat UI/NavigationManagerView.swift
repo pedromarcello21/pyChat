@@ -10,6 +10,7 @@ enum SideBarItem: String, Identifiable, CaseIterable {
     var id: String { rawValue }
     
     case pyChat = "pyChat"
+    case Email = "Email"
     case Leads = "Leads"
     case Reminders = "Reminders"
     case PokemonCenter = "Pokémon Center"
@@ -31,6 +32,8 @@ struct NavigationManagerView: View {
             switch selectedSideBarItem {
             case .pyChat:
                 pyChat()
+            case .Email:
+                Email()
             case .Leads:
                 Leads()
             case .Reminders:

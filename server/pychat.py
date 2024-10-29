@@ -165,13 +165,9 @@ function_descriptions = [
                 "role": {
                     "type": "string",
                     "description": "This is the role that the user applied for and it reaching out in regards to.  This is only tied to a cold purpose meaning the user has no relation to the person he/she is reaching out to.",
-                },
-                "resume": {
-                    "type": "string",
-                    "description": "Option to include resume.  If resume is included set it as True.  Else set it as False.",
-                },
+                }
             },
-            "required": ["receiver", "company", "name", "purpose","link","role","resume"]
+            "required": ["receiver", "company", "name", "purpose","link","role"]
         }
     },
     {
@@ -243,17 +239,22 @@ def chat_with_pychat(prompt):
     
     # Check if the output contains a function call
     if output.function_call != None:
-        print(output)
-        if output.function_call.name in ["get_flight_info", "get_weather", "analyze_pokemon_team"] :
+        print(f"Function being called : {output.function_call}")
+        if output.function_call.name in ["get_flight_info", "get_weather", "analyze_pokemon_team", "send_email"] :
             # Here we add the function output back to the messages with role: function
             
             # Parse the function call and arguments
             function_name = output.function_call.name
+            print(f"function name: {function_name}")
             params = json.loads(output.function_call.arguments)
+            print(f"function params: {params}")
+            # print(params["receiver"])
+
             
             # Dynamically call the appropriate function
             chosen_function = eval(function_name)
             answer = chosen_function(**params)
+            print(f"answer type: {answer}")
 
             second_completion = openai.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -269,8 +270,6 @@ def chat_with_pychat(prompt):
 
             # Print the final response from GPT
             return response
-
-
 
         # else:
         # Parse the function call and arguments
@@ -320,6 +319,16 @@ def send_prompt():
     prompt = data.get("prompt", "")
     respose = chat_with_pychat(prompt)
     return respose
+
+#### email Ish ####
+@app.post('/email')
+def send_email_route():
+    data = request.json
+    # prompt = data.get("prompt", {})
+    prompt_content = str(data)
+    # print(prompt_content)
+    result = chat_with_pychat(prompt_content)
+    return result
 
 #### Pokemon Ish ####
 

@@ -15,6 +15,7 @@
 		EB9355562CB5790B00621A76 /* PokemonCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9355552CB5790300621A76 /* PokemonCenter.swift */; };
 		EBA3B21C2CA6FF6F0031EC8A /* ReminderForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBA3B21B2CA6FF6B0031EC8A /* ReminderForm.swift */; };
 		EBB2EB792CAC873000EA41D5 /* VictoryRoad.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBB2EB782CAC872800EA41D5 /* VictoryRoad.swift */; };
+		EBF4119E2CD1783C00E445A2 /* Email.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBF4119D2CD1783900E445A2 /* Email.swift */; };
 		EBFBBAC22CA1D385003EDD77 /* NavigationManagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBFBBAC12CA1D37B003EDD77 /* NavigationManagerView.swift */; };
 		EBFBBAC42CA1D57D003EDD77 /* ContentViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBFBBAC32CA1D577003EDD77 /* ContentViews.swift */; };
 		EBFBBAC62CA1F09D003EDD77 /* pyChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBFBBAC52CA1F093003EDD77 /* pyChatView.swift */; };
@@ -34,6 +35,7 @@
 		EB9355552CB5790300621A76 /* PokemonCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCenter.swift; sourceTree = "<group>"; };
 		EBA3B21B2CA6FF6B0031EC8A /* ReminderForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderForm.swift; sourceTree = "<group>"; };
 		EBB2EB782CAC872800EA41D5 /* VictoryRoad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VictoryRoad.swift; sourceTree = "<group>"; };
+		EBF4119D2CD1783900E445A2 /* Email.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Email.swift; sourceTree = "<group>"; };
 		EBFBBAC12CA1D37B003EDD77 /* NavigationManagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationManagerView.swift; sourceTree = "<group>"; };
 		EBFBBAC32CA1D577003EDD77 /* ContentViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViews.swift; sourceTree = "<group>"; };
 		EBFBBAC52CA1F093003EDD77 /* pyChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pyChatView.swift; sourceTree = "<group>"; };
@@ -72,6 +74,7 @@
 		EB2AA87F2C7FA8F1003B0994 /* pyChat UI */ = {
 			isa = PBXGroup;
 			children = (
+				EBF4119D2CD1783900E445A2 /* Email.swift */,
 				EBFBBACB2CA1FDBA003EDD77 /* Company.swift */,
 				EB5D30772CA5C4F8005831EA /* ContactForm.swift */,
 				EB2AA8802C7FA8F1003B0994 /* pyChat_UIApp.swift */,
@@ -179,6 +182,7 @@
 				EB2AA8832C7FA8F1003B0994 /* ContentView.swift in Sources */,
 				EBFBBAC42CA1D57D003EDD77 /* ContentViews.swift in Sources */,
 				EB2AA8812C7FA8F1003B0994 /* pyChat_UIApp.swift in Sources */,
+				EBF4119E2CD1783C00E445A2 /* Email.swift in Sources */,
 				EBFBBACC2CA1FDBD003EDD77 /* Company.swift in Sources */,
 				EBA3B21C2CA6FF6F0031EC8A /* ReminderForm.swift in Sources */,
 			);
