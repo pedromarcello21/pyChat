@@ -49,7 +49,7 @@ def send_email(receiver, company, name, role, link, purpose): #, resume):
     # if resume == "True":
 
     #not reading resume in relative path rather the one on my machine
-    resume_path = "/Users/pedro/Desktop/Job Ish/Pedro Vincenty's Resume.pdf"
+    resume_path = "/Users/pedro/Job Ish/Pedro Vincenty's Resume.pdf"
     try:
         with open(resume_path, 'rb') as file:
             file_data = file.read() 
