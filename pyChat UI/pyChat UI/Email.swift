@@ -16,46 +16,50 @@ struct Email: View {
     @State private var selectedPurpose: String = ""
     @State private var responseMessage: String = ""
 //    @State private var selected: Bool = false
-    let purposes = ["HR", "Recruiter"]
+    //let purposes = ["HR", "Recruiter"]
+    
+//    @State var purpose: String = ""
+    let purposes: [String] = [
+        "HR", "Recruiter"
+    ]
+    
 
 
     var body: some View{
         
         VStack{
-            HStack{
-                Text("Email")
-                TextField("Enter email", text: $email)
-            }
-            HStack{
-                Text("Name")
-                TextField("Enter First Name", text: $name)
-
-            }
-            HStack{
-                Text("Company")
-                TextField("Enter Company this person works at", text: $company)
-
-            }
-            HStack{
-                Text("Role")
-                TextField("Enter Role", text: $role)
-
-            }
-            HStack{
-                Text("JD")
-                TextField("Enter Job Posting", text: $jd)
-
-            }
-            ForEach(purposes, id:\.self) { purpose in
-                Button(action: {
-                    selectedPurpose = purpose
-                }) {
-                    HStack{
-                        Image(systemName : selectedPurpose == purpose ? "circle.fill" : "circle")
-                        Text(purpose)
+            Form {
+                    Section {
+                            TextField("Email", text: $email)
+                            TextField("First Name", text: $name)
+                            TextField("Company", text: $company)
+                            TextField("Role", text: $role)
+                            TextField("Job Posting", text: $jd)
+                        }
                     }
+                    .frame(maxWidth: 300)
+            
+            Picker(
+                selection: $selectedPurpose,
+                label: HStack{
+                    Text("Recipient:")
+                    Text(selectedPurpose)
                 }
-            }
+                    .padding()
+                    .foregroundColor(.white)
+//                    .background(Color.blue)
+                ,
+                content: {
+                    //can also do filterOptions.indices, index in filterOptions[index] type ish
+                    ForEach(purposes, id: \.self) {
+                        option in Text(option)
+                            .tag(option)
+                    }
+                })
+            //MenupickerStyle(), wheelpickerstyle()
+            .pickerStyle(SegmentedPickerStyle())
+            .frame(maxWidth: 300)
+            
             if !email.isEmpty, !name.isEmpty, !company.isEmpty, !role.isEmpty, !jd.isEmpty, !selectedPurpose.isEmpty {
                 Button(action: {
                     sendEmail()

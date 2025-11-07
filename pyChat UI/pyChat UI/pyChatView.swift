@@ -103,7 +103,10 @@ struct pyChat: View {
                 
                 TextField("Enter task...", text: $textInput)
                     .padding()
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    //.textFieldStyle(RoundedBorderTextFieldStyle())
+                    .background(Color.gray.opacity(0.3).cornerRadius(10))
+                    .foregroundColor(.black)
+
                     .frame(width:350, height: 100)
                 //functionality to press enter instead of clicking
                     .onSubmit{
