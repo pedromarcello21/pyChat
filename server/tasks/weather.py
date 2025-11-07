@@ -6,24 +6,26 @@ load_dotenv()
 
 weather_key = os.environ.get("WEATHER_API")
 
-def get_weather(location):
+def get_weather():
     #get location key.  need this key to search weather conditions
-    weather_location_url = f"http://dataservice.accuweather.com/locations/v1/cities/search?apikey={weather_key}&q={location}"
+    LATITUDE = "40.7736"
+    LONGITUDE = "-73.9566"
+    weather_location_url = f"https://weather.googleapis.com/v1/currentConditions:lookup?key={weather_key}&location.latitude={LATITUDE}&location.longitude={LONGITUDE}&unitsSystem=IMPERIAL"
     response = requests.get(weather_location_url)
     results = response.json()
-    # print(results[0]['LocalizedName'])
-    location_key = results[0]['Key']
+    # print(results)
+    # location_key = results[0]['Key']
 
-    weather_condition_url = f"http://dataservice.accuweather.com/currentconditions/v1/{location_key}?apikey={weather_key}"
-    weather_response = requests.get(weather_condition_url)
-    weather_result = weather_response.json()
-    print(weather_result[0])
+    # weather_condition_url = f"http://dataservice.accuweather.com/currentconditions/v1/{location_key}?apikey={weather_key}"
+    # weather_response = requests.get(weather_condition_url)
+    # weather_result = weather_response.json()
+    # print(weather_result[0])
 
     current_weather = {
-        "location": results[0]['LocalizedName'],
-        "conditions":weather_result[0]['WeatherText'],
-        "isRaining":weather_result[0]['HasPrecipitation'],
-        "temp":weather_result[0]['Temperature']['Imperial']['Value']
+        "description": results['weatherCondition']['description']['text'],
+        "temperature":results['temperature']['degrees'],
+        "precipitation":results['precipitation']['probability']
     }
+    print(json.dumps(current_weather))
 
     return json.dumps(current_weather)

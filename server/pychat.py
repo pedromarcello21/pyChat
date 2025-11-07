@@ -53,17 +53,34 @@ function_descriptions = [
     # },
     {
         "name": "get_weather",
-        "description": "Get weather information for give location.  In response say the name of the location rather than 'your location'",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "location": {
-                    "type": "string",
-                    "description": "the location to retrive weather information for",
-                }
-            },
-            "required": ["location"],
-        },
+        "description": "Get weather information.  In response say the description of the weather, the temperature in farenheit, and the percentage of the type of precipitation",
+        # "parameters": {
+        #     "type": "object",
+        #     "properties": {
+        #         "description": {
+        #             "type": "string",
+        #             "description": "the description of the weather",
+        #         },
+        #         "temperature": {
+        #             "type": "number",
+        #             "description": "the temperature in farenheit",
+        #         },
+        #         "precipitation": {
+        #             "type": "object",
+        #             "properties": {
+        #                 "percent": {
+        #                     "type": "integer",
+        #                     "description": "the percentage of chance of precipitation",
+        #                 },
+        #                 "type": {
+        #                     "type": "string",
+        #                     "description": "the kind of precipitation",
+        #                 }
+        #         }
+        #     }
+        #     },
+        #     "required": ["description", "temperature", "precipitation"],
+        # },
     },
     {
         "name": "analyze_pokemon_team",
