@@ -44,61 +44,84 @@ class LeadModel: ObservableObject{
 }
 
 struct Leads: View {
+    
     @StateObject var viewModel = LeadModel()
-//    @State private var textInput: String = ""
+    @State private var stackPath: [String] = []
+    
     var body: some View{
-        VStack{
-            HStack{
-                Text("Leads")
-                NavigationLink(destination: Company(company_id: nil, company: nil, alumniPassed:nil, postingsPassed: nil)){
-                    Image(systemName: "plus")
-                }
-            }
-            .padding(.horizontal)
-            HStack(spacing: 20){
-                Text("Company")
-                    .frame(width:100, alignment: .center)
-                Text("Postings")
-                    .frame(width:100, alignment: .center)
-                Text("Alumni")
-                    .frame(width:100, alignment: .center)
-            }
-            .padding(.horizontal)
-            
-            List{
-                ForEach(viewModel.leads, id :\.self) {
-                    lead in
-                    HStack(spacing: 20){
-                        Spacer(minLength: 20)
-                        NavigationLink(destination: Company(company_id : lead.id, company : lead.company, alumniPassed:lead.alumni, postingsPassed:lead.postings))
-                        
-                        {
-                        Text(lead.company)
-                            .frame(width:100, alignment: .center)
-                            .padding(.leading, 40)
-
+        NavigationStack(path: $stackPath){
+            ScrollView{
+                VStack(spacing: 20){
+                    ForEach(viewModel.leads, id: \.self){
+                        lead in NavigationLink(destination: Company(company_id: nil, company: nil, alumniPassed:nil, postingsPassed: nil)){
+                            Text(lead.company)
                         }
-                        
-                        Image(systemName: lead.postings ? "flag.fill" : "xmark")
-                            .frame(width:100, alignment: .center)
-                        
-                        Image(systemName: lead.alumni ? "flag.fill" : "xmark")
-                            .frame(width:100, alignment: .center)
-                        Spacer()
-                        Button(action: {
-                            print(lead.id)
-                            removeLead(lead.id)
-                        }) {Image(systemName: "minus")}
-                        
                     }
-                    .padding(.horizontal)
                 }
             }
-        }
-        .onAppear{
-            viewModel.fetch()
+            .onAppear {
+                viewModel.fetch()
+            }
         }
     }
+////    @State private var textInput: String = ""
+//    var body: some View{
+//        VStack{
+//            HStack{
+//                Text("Leads")
+//                NavigationLink(destination: Company(company_id: nil, company: nil, alumniPassed:nil, postingsPassed: nil)){
+//                    Image(systemName: "plus")
+//                }
+//            }
+//            .padding(.horizontal)
+//            HStack(spacing: 20){
+//                Text("Company")
+//                    .frame(width:100, alignment: .center)
+//                Text("Postings")
+//                    .frame(width:100, alignment: .center)
+//                Text("Alumni")
+//                    .frame(width:100, alignment: .center)
+//            }
+//            .padding(.horizontal)
+//            
+//            List{
+//                ForEach(viewModel.leads, id :\.self) {
+//                    lead in
+//                    HStack(spacing: 20){
+//                        Spacer(minLength: 20)
+//                        NavigationLink(destination: Company(company_id : lead.id, company : lead.company, alumniPassed:lead.alumni, postingsPassed:lead.postings))
+//                        
+//                        {
+//                        Text(lead.company)
+//                            .frame(width:100, alignment: .center)
+//                            .padding(.leading, 40)
+//
+//                        }
+//                        
+//                        Image(systemName: lead.postings ? "flag.fill" : "xmark")
+//                            .frame(width:100, alignment: .center)
+//                        
+//                        Image(systemName: lead.alumni ? "flag.fill" : "xmark")
+//                            .frame(width:100, alignment: .center)
+//                        Spacer()
+//                        Button(action: {
+//                            print(lead.id)
+//                            removeLead(lead.id)
+//                        }) {Image(systemName: "minus")}
+//                        
+//                    }
+//                    .padding(.horizontal)
+//                }
+//            }
+//        }
+//        .onAppear{
+//            viewModel.fetch()
+//        }
+//    }
+    
+    
+    
+    /////////////////////////////////////
         
         func removeLead(_ id: Int) {
             //url of my api
