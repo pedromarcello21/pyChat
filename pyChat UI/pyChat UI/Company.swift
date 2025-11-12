@@ -19,6 +19,7 @@ class ContactModel: ObservableObject{
 
     @Published var contacts: [Contact] = []
     
+    
     func fetch(company_id: Int){
         guard let url = URL(string: "http://127.0.0.1:5555/contacts/\(company_id)") else {
             return
@@ -51,15 +52,18 @@ struct Company: View{
     @Environment(\.presentationMode) private var
     presentationMode: Binding<PresentationMode>
     
+    
+    
     let company_id: Int?
     let company: String?
     let alumniPassed: Bool?
     let postingsPassed: Bool?
     @ObservedObject private var contactModel = ContactModel()
+    @ObservedObject var leadModel: LeadModel
     
     @State private var companyName: String = ""
-    @State private var alumni: Bool? = nil
-    @State private var postings: Bool? = nil
+    @State private var alumni: Bool = false
+    @State private var postings: Bool = false
     
     var body: some View{
         VStack{
@@ -67,27 +71,37 @@ struct Company: View{
                 Text(company!)
                     .onAppear{
                         contactModel.fetch(company_id: company_id)
-                        alumni = alumniPassed //initialize here if you are passing values
-                        postings = postingsPassed
+                        alumni = alumniPassed ?? false //initialize here if you are passing values
+                        postings = postingsPassed ?? false
                     }
+
                 
-                Picker(selection: $alumni, label: Text("Alumni")) {
-                    Text("Yes").tag(true)
-                    Text("No").tag(false)
+                Toggle(isOn: $alumni) {
+                    Text("Alumni?")
                 }
-                .pickerStyle(.radioGroup)
-                .horizontalRadioGroupLayout()
                 
-                Picker(selection: $postings, label: Text("Postings")) {
-                    Text("Yes").tag(true)
-                    Text("No").tag(false)
+
+                .toggleStyle(SwitchToggleStyle(tint: Color.green))
+                .onChange(of: alumni) {newValue in
+                    if newValue != alumniPassed {
+                        updateLead(company_id)
+                    }
                 }
-                .pickerStyle(.radioGroup)
-                .horizontalRadioGroupLayout()
                 
-                Button(action: { updateLead(company_id) }) {
-                    Text("update")
+                Toggle(isOn: $postings) {
+                    Text("Postings?")
                 }
+                .onChange(of: postings) {newValue in
+                    if newValue != postingsPassed {
+                        updateLead(company_id)
+                    }
+                }
+                .toggleStyle(SwitchToggleStyle(tint: Color.green))
+
+                
+//                Button(action: { updateLead(company_id) }) {
+//                    Text("update")
+//                }
                 
                 Text("Contacts")
                 List(contactModel.contacts, id: \.self) {
@@ -140,15 +154,6 @@ struct Company: View{
                 }
             }
         }
-        .toolbar(content: {
-            ToolbarItem(placement: .automatic) {
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }, label: {
-                    Text("Back")
-                })
-            }
-        })
     }
     
     // Functions moved outside the body closure
@@ -237,6 +242,12 @@ struct Company: View{
             return
         }
         
+        // Immediately update local model for reactive UI
+        if let index = leadModel.leads.firstIndex(where: { $0.id == id }) {
+            leadModel.leads[index].alumni = alumni
+            leadModel.leads[index].postings = postings
+        }
+        
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
@@ -252,6 +263,7 @@ struct Company: View{
         }
         task.resume()
     }
+
 }
 
 

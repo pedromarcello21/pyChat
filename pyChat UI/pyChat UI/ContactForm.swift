@@ -101,11 +101,11 @@ struct ContactForm: View {
                 return
             }
             
-            //update state to UI
-            //        DispatchQueue.main.async {
-            //            responseMessage = responseString
-            //
-            //        }
+//            update state to UI
+//                    DispatchQueue.main.async {
+//                        responseMessage = responseString
+//            
+//                    }
         }
         //calls the task defined above
         task.resume()
