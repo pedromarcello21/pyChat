@@ -243,6 +243,7 @@ struct Company: View{
         }
         
         // Immediately update local model for reactive UI
+        //searches through that array to find the index of the lead whose id matches the one just updated
         if let index = leadModel.leads.firstIndex(where: { $0.id == id }) {
             leadModel.leads[index].alumni = alumni
             leadModel.leads[index].postings = postings
