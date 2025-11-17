@@ -8,57 +8,54 @@
 import SwiftUI
 
 struct ContactForm: View {
-    @Environment(\.presentationMode) private var
-    presentationMode: Binding<PresentationMode>
+    //    @Environment(\.presentationMode) private var
+    //    presentationMode: Binding<PresentationMode>
     
     @State private var nameForm: String = ""
     @State private var emailForm: String = ""
     @State private var numberForm: String = ""
     
+    @ObservedObject var contactModel: ContactModel
+    
+    
     let company_id : Int
+    @Environment(\.dismiss) private var dismiss
+    
     
     var body: some View {
-        
-        LabeledContent{
-            TextField("", text: $nameForm)
-                .padding()
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .frame(width:350)
-        } label: {Text("Name")}
-        LabeledContent{
-            TextField("", text: $emailForm)
-                .padding()
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .frame(width:350)
-        } label: {Text("Email")}
-        LabeledContent{
-            TextField("", text: $numberForm)
-                .padding()
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .frame(width:350)
-        } label: {Text("Number")}
-        Button(action:{
-            print("contact added")
-            //                       print(company_id!)
-            addContact()
-        })
-        {
-            Image(systemName:"plus")
-                .padding()
-                .imageScale(.medium)
-        }
-        .background(Color.blue)
-        .toolbar(content: {
-            ToolbarItem (placement: .automatic){
-                Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }, label: {
-                    Text("Back")
+        ZStack(alignment: .topLeading) { // ⬅️ alignment goes here
+            
+            Form {
+                Section {
+                    TextField("Name", text: $nameForm, prompt: Text("Required"))
+                    TextField("Email", text: $emailForm)
+                    TextField("Number", text: $numberForm)
                 }
-                )
+                if !nameForm.isEmpty { Section {
+                    Button(action: {
+                        addContact()
+                        dismiss()
+                    }) {
+                        Image(systemName: ("plus.circle.fill"))
+                    }
+                }
             }
-        })
+            }
+            .frame(width: 400, height: 200)
+            .padding()
+            Button(action: {
+                dismiss()
+            }) {
+                Image(systemName: "xmark")
+                    .foregroundColor(.white)
+                    .font(.headline)
+            }
+        }
+        .padding()
     }
+    
+    
+    
     func addContact() {
         //url of my api
         guard let url = URL(string: "http://127.0.0.1:5555/contacts") else {
@@ -96,18 +93,31 @@ struct ContactForm: View {
             }
             
             //get return value from pychat
-            guard let data = data, let responseString = String(data: data, encoding: .utf8) else {
+            guard let data = data else {
                 print("No data received or invalid format")
                 return
             }
+            do {
+                // decode the new contact returned from Flask
+                let newContact = try JSONDecoder().decode(Contact.self, from: data)
+                
+                // update the UI immediately
+                DispatchQueue.main.async {
+                    contactModel.contacts.append(newContact)
+                }
+            }
+            catch {
+                    print("Decoding error: \(error)")
+                }
             
-//            update state to UI
-//                    DispatchQueue.main.async {
-//                        responseMessage = responseString
-//            
-//                    }
         }
         //calls the task defined above
         task.resume()
+    }
+}
+
+struct Contact_Preview: PreviewProvider {
+    static var previews: some View {
+        NavigationManagerView()
     }
 }

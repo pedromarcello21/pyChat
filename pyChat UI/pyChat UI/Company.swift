@@ -54,22 +54,27 @@ struct Company: View{
     
     
     
-    let company_id: Int?
+    let company_id: Int
     let company: String?
     let alumniPassed: Bool?
     let postingsPassed: Bool?
-    @ObservedObject private var contactModel = ContactModel()
+    
+    @StateObject var contactModel = ContactModel()
     @ObservedObject var leadModel: LeadModel
     
     @State private var companyName: String = ""
     @State private var alumni: Bool = false
     @State private var postings: Bool = false
+    @State var showSheet: Bool = false
+    
     
     var body: some View{
         VStack{
-            if let company_id = company_id{
-                Text(company!)
-                    .onAppear{
+//            if let company_id = company_id{
+            Text(company!)
+                .padding()
+                .font(.largeTitle)
+                .onAppear{
                         contactModel.fetch(company_id: company_id)
                         alumni = alumniPassed ?? false //initialize here if you are passing values
                         postings = postingsPassed ?? false
@@ -99,60 +104,44 @@ struct Company: View{
                 .toggleStyle(SwitchToggleStyle(tint: Color.green))
 
                 
-//                Button(action: { updateLead(company_id) }) {
-//                    Text("update")
-//                }
-                
-                Text("Contacts")
-                List(contactModel.contacts, id: \.self) {
-                    contact in HStack(alignment: .center) {
-                        Spacer()
-                        Text(contact.name)
-                            .padding(.leading, 40)
-                        Text(contact.email)
-                        Text(contact.number)
-                        Spacer()
-                        Button(action: { removeContact(contact.id) }) {
-                            Image(systemName: "minus")
+            List{
+                Section(header: HStack{
+                    Text("Contacts")
+                    Image(systemName: "person.fill")
+                }
+                .frame(maxWidth: .infinity, alignment: .center)){
+                    ForEach(contactModel.contacts, id: \.self){
+                        contact in HStack {
+                            Text(contact.name).frame(maxWidth: .infinity, alignment: .leading)
+                            
+                            Text(contact.email).frame(maxWidth: .infinity, alignment: .center)
+                            Text(contact.number).frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                        .swipeActions(
+                            edge: .trailing,
+                            allowsFullSwipe: true
+                        ){
+                            Button("Delete"){
+                                removeContact(contact.id)
+                            }
+                            .tint(.red)
                         }
                     }
+                    
                 }
-                
-            NavigationLink(destination: ContactForm(company_id: company_id)) {
-                Text("Add Contact")
             }
             .padding()
-                    
-                
-                
-            } else {
-                LabeledContent {
-                    TextField("Enter new lead...", text: $companyName)
-                        .padding()
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 350)
-                } label: {
-                    Text("Company")
-                }
-                
-                Picker(selection: $alumni, label: Text("Alumni")) {
-                    Text("Yes").tag(true)
-                    Text("No").tag(false)
-                }
-                .pickerStyle(.radioGroup)
-                .horizontalRadioGroupLayout()
-                
-                Picker(selection: $postings, label: Text("Postings")) {
-                    Text("Yes").tag(true)
-                    Text("No").tag(false)
-                }
-                .pickerStyle(.radioGroup)
-                .horizontalRadioGroupLayout()
-                
-                Button(action: { addLead() }) {
-                    Image(systemName: "plus")
-                }
-            }
+            .frame(maxWidth:500)
+            
+            
+            Button(action: {
+                showSheet.toggle()
+            }, label: {
+                Text("Add Contact").padding()
+            }).padding(.bottom)
+            .sheet(isPresented: $showSheet, content: {
+                ContactForm(contactModel: contactModel, company_id: company_id)
+            })
         }
     }
     
@@ -219,6 +208,11 @@ struct Company: View{
             }
             
             print("Contact removed successfully")
+            
+            //have to pass company_id in bc you are in a dependent view
+            DispatchQueue.main.async {
+                contactModel.fetch(company_id: company_id)
+            }
         }
         task.resume()
     }
@@ -266,7 +260,6 @@ struct Company: View{
     }
 
 }
-
 
 struct Company_Preview: PreviewProvider {
     static var previews: some View {

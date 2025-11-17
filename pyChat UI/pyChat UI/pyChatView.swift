@@ -14,8 +14,6 @@ struct pyChat: View {
     @State private var responseMessage: String? = nil
     ///chat history captures message content and if it was sent my user or pychat
     @State private var chatHistory: [(message: String, isUser: Bool)] = []
-    //create a speech synthesizer instance
-    private let speechSynthesizer = AVSpeechSynthesizer()
 
     var body: some View {
         //start of VStack
@@ -188,12 +186,6 @@ struct pyChat: View {
         //calls the task defined above
         task.resume()
     }
-    //function to speak
-       private func speak(text: String) {
-           let utterance = AVSpeechUtterance(string: text)
-           utterance.voice = AVSpeechSynthesisVoice(language: "en-AU") // Set the voice language
-           speechSynthesizer.speak(utterance)
-       }
 }
 
 struct pyChatView_Preview: PreviewProvider {
