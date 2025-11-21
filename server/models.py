@@ -59,7 +59,7 @@ class Contact(db.Model):
 class Reminder(db.Model):
     __tablename__ = 'reminders'
     id = db.Column(db.Integer, primary_key=True)
-    contact_id = db.Column(db.Integer, db.ForeignKey('contacts.id'))
+    contact_id = db.Column(db.Integer, db.ForeignKey('contacts.id'), nullable = True)
     alert = db.Column(db.DateTime)
     note = db.Column(db.String)
 
@@ -69,7 +69,7 @@ class Reminder(db.Model):
     def to_dict(self):
         return{
             'id':self.id,
-            'contact':self.contact.to_dict(),
+            'contact':self.contact.to_dict() if self.contact else None,
             'alert': self.alert.strftime('%Y-%m-%d %H:%M'),  # Format the datetime
             'note':self.note
 

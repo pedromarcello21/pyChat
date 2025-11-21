@@ -12,7 +12,7 @@ from sqlalchemy import and_
 
 
 from datetime import datetime, timedelta
-from tasks.message_templates import introductory_linkedin_msg, wellfound_msg #get_flight_info, 
+from tasks.message_templates import introductory_linkedin_msg, wellfound_msg, reminder_msg #get_flight_info, 
 from tasks.email_script import send_email
 from tasks.selenium_tasks import find_flight
 from tasks.open_applications import open_application
@@ -234,6 +234,26 @@ function_descriptions = [
         #     },
         #     "required": ["destination"]
         # }
+    },
+    {
+        "name": "reminder_msg",
+        "description": "Create a draft message of a follow given the name and note provided",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the person to follow up with",
+                },
+                # annoying bug that gives me a random date
+                "note": {
+                    "type": "string",
+                    "description": "The context of the reason for following up",
+                }
+
+            },
+            "required": ["name", "note"]
+        }
     }
 
 
@@ -257,7 +277,7 @@ def chat_with_pychat(prompt):
     # Check if the output contains a function call
     if output.function_call != None:
         print(f"Function being called : {output.function_call}")
-        if output.function_call.name in ["get_flight_info", "get_weather", "analyze_pokemon_team", "send_email"] :
+        if output.function_call.name in ["get_flight_info", "get_weather", "analyze_pokemon_team", "send_email", "createFollowUpMessage"] :
             # Here we add the function output back to the messages with role: function
             
             # Parse the function call and arguments
@@ -525,6 +545,37 @@ def get_upcoming_reminders():
         )
     ).all()    
     return [upcoming_reminder.to_dict() for upcoming_reminder in upcoming_reminders]
+
+
+# @app.delete('/leads/<int:id>')
+# def remove_lead(id):
+#     found_lead = Lead.query.where(Lead.id == id).first()
+#     if found_lead:
+#         db.session.delete(found_lead)
+#         db.session.commit()
+#         return {}, 204
+#     else:
+#         return "Lead not found"
+
+@app.delete('/reminders/<int:id>')
+def remove_reminder(id):
+    found_reminder = Reminder.query.where(Reminder.id == id).first()
+    if found_reminder:
+        db.session.delete(found_reminder)
+        db.session.commit()
+        return {}, 204
+    else:
+        return "Reminder not found"
+    
+@app.post('/reminder-draft-msg')
+def create_draft_reminder_msg():
+    data = request.json
+    name = data.get("name", {})
+    note = data.get("note", {})
+    string_prompt = f"Create a reminder message for {name} about {note}"
+    print(string_prompt)
+    response = chat_with_pychat(string_prompt)
+    return response
 
 
 

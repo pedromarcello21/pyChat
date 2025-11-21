@@ -24,13 +24,12 @@ I have a demonstrated ability to simplify complex technical concepts for diverse
 Best,
 Pedro"""
 
-# def get_flight_info(loc_origin, loc_destination):
-#     """Get flight information between two locations."""
-#     flight_info = {
-#         "loc_origin": loc_origin,
-#         "loc_destination": loc_destination,
-#         "datetime": str(datetime.now() + timedelta(hours=2)),
-#         "airline": "LIT",
-#         "flight": "LIT21",
-#     }
-#     return json.dumps(flight_info)
+def reminder_msg(name, note):
+    return f"""Hi {name},
+
+I hope you're doing well. I wanted to kindly follow up regarding {note}.
+
+Thank you!
+
+Pedro"""
+
